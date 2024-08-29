@@ -10,9 +10,8 @@ export default (components: OBC.Components) => {
   const highlighter = components.get(OBF.Highlighter);
 
   let newSelectionForm: HTMLDivElement;
-  let groupNameInput: BUI.TextInput;
-  let saveSelectionBtn: BUI.Button;
   let groupNameDropdown: BUI.Dropdown;
+  let saveSelectionBtn: BUI.Button;
 
   const selectionOptions = [
     { value: 'In Production', label: 'In Production' },
@@ -28,43 +27,37 @@ export default (components: OBC.Components) => {
     });
   };
 
-  const onGroupNameInputCreated = (e?: Element) => {
+  const onGroupNameDropdownCreated = (e?: Element) => {
     if (!e) return;
     groupNameDropdown = e as BUI.Dropdown;
 
     // Clear existing options
     groupNameDropdown.innerHTML = '';
 
-    // Manually create and append options as divs
+    // Populate dropdown options
     selectionOptions.forEach(option => {
-        const item = document.createElement('div');
-        item.dataset.value = option.value;
-        item.textContent = option.label;
-        item.className = 'dropdown-item';  // Add a specific class to identify the item
-        item.style.padding = '8px'; // Style the items if necessary
-        item.style.cursor = 'pointer';
+      const item = document.createElement("bim-label");
+      item.dataset.value = option.value;
+      item.textContent = option.label;
+      item.className = 'dropdown-item';  
+      item.style.padding = '8px';
+      item.style.cursor = 'pointer';
 
-        item.addEventListener('click', () => {
-            groupNameDropdown.value = [option.value];  // Set the selected value as an array
-            groupNameDropdown.label = option.label;   // Set the label of the dropdown to show the selected value
-            console.log('Selected value:', option.value);
+      // When an option is clicked, update the dropdown's value and display
+      item.addEventListener('click', () => {
+        groupNameDropdown.value = [option.value];  
+        groupNameDropdown.label = option.label;  
+        console.log('Selected value:', option.value);
+      });
 
-            // Dispatch a custom event if needed
-            const event = new CustomEvent('value-changed', {
-                detail: { value: [option.value] }
-            });
-            groupNameDropdown.dispatchEvent(event);
-        });
-
-        groupNameDropdown.appendChild(item);
+      groupNameDropdown.appendChild(item);
     });
 
-    // Listen for the onValueChange event (or any specific event required by the component)
-    groupNameDropdown.addEventListener('value-changed', (event: any) => {
-        console.log('Dropdown value changed:', event.detail.value);
+    highlighter.events.select.onClear.add(() => {
+      groupNameDropdown.value = [];
+      groupNameDropdown.label = "Select..."; // Reset the dropdown label
     });
-};
-
+  };
 
   const onSaveSelectionCreated = (e?: Element) => {
     if (!e) return;
@@ -80,24 +73,23 @@ export default (components: OBC.Components) => {
   const onSaveGroupSelection = async () => {
     if (!(groupNameDropdown && groupNameDropdown.value.length > 0)) return; 
     const selectedValue = groupNameDropdown.value[0]; 
+    console.log(selectedValue);
     
     newSelectionForm.style.display = "none";
     saveSelectionBtn.style.display = "none";
   
     const classifier = components.get(OBC.Classifier);
     if (!(selectedValue in classifier.list)) {
-        classifier.list.CustomSelections[selectedValue] = {
-            id: null,
-            map: highlighter.selection.select,
-            name: selectedValue,
-        };
+      classifier.list.CustomSelections[selectedValue] = {
+        id: null,
+        map: highlighter.selection.select,
+        name: selectedValue,
+      };
     }
   
     updateCustomSelections();
-    groupNameDropdown.textContent = "Select...";  // Reset the dropdown display text
-    groupNameDropdown.value = [];  // Clear the dropdown value
-};
-
+    groupNameDropdown.value = [];
+  };
   
   const onNewSelection = () => {
     const selectionLength = Object.keys(highlighter.selection.select).length;
@@ -108,7 +100,8 @@ export default (components: OBC.Components) => {
   const onCancelGroupCreation = () => {
     if (!newSelectionForm) return;
     newSelectionForm.style.display = "none";
-    groupNameInput.value = "";
+    groupNameDropdown.value = [];
+    groupNameDropdown.label = "Select...";  // Reset on cancel
   };
 
   return BUI.Component.create<BUI.PanelSection>(() => {
@@ -116,10 +109,8 @@ export default (components: OBC.Components) => {
       <bim-panel-section label="Custom Selections" icon="clarity:blocks-group-solid">
         <div ${BUI.ref(onFormCreated)} style="display: none; gap: 0.5rem">
           <bim-dropdown 
-            ${BUI.ref(onGroupNameInputCreated)} 
-            .options=${selectionOptions} 
-            placeholder="Select..." 
-            vertical
+            ${BUI.ref(onGroupNameDropdownCreated)} 
+            label="Example Label" 
             .multiple=${false}> 
           </bim-dropdown>
           <bim-button @click=${onSaveGroupSelection} icon="mingcute:check-fill" style="flex: 0" label="Accept"></bim-button>
