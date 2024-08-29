@@ -12,7 +12,9 @@ const serializeFragmentIdMap = (fragmentIdMap: FRAGS.FragmentIdMap) => {
   for (const fragmentID in fragmentIdMap) {
     map[fragmentID] = [...fragmentIdMap[fragmentID]];
   }
+  console.log(JSON.stringify(map));
   return JSON.stringify(map);
+  
 };
 
 export default (state: GroupingsUIState) => {
@@ -24,6 +26,7 @@ export default (state: GroupingsUIState) => {
     const data: BUI.TableGroupData[] = [];
     if ("CustomSelections" in classifier.list) {
       const customSelections = classifier.list.CustomSelections;
+      console.log(customSelections);
       for (const group in customSelections) {
         const fragmentIdMap = customSelections[group].map;
         const groupRow: BUI.TableGroupData = {
