@@ -26,7 +26,7 @@ export default (state: GroupingsUIState) => {
     const data: BUI.TableGroupData[] = [];
     if ("CustomSelections" in classifier.list) {
       const customSelections = classifier.list.CustomSelections;
-      console.log(customSelections);
+      console.log("CustomSelections for Table:", customSelections);
       for (const group in customSelections) {
         const fragmentIdMap = customSelections[group].map;
         const groupRow: BUI.TableGroupData = {
@@ -47,6 +47,7 @@ export default (state: GroupingsUIState) => {
 
   table.dataTransform = {
     Name: (value) => {
+      console.log("Transform value:", value);
       if (typeof value !== "string") return value;
       const onDeleteGroup = () => {
         if (!("CustomSelections" in classifier.list)) return;

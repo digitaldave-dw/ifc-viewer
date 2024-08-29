@@ -27,37 +27,45 @@ export default (components: OBC.Components) => {
     });
   };
 
+  let selectedDropdownValue: string | undefined;
+
   const onGroupNameDropdownCreated = (e?: Element) => {
     if (!e) return;
     groupNameDropdown = e as BUI.Dropdown;
-
+  
     // Clear existing options
     groupNameDropdown.innerHTML = '';
-
-    // Populate dropdown options
+  
+    // Populate dropdown options using `bim-option`
     selectionOptions.forEach(option => {
-      const item = document.createElement("bim-label");
-      item.dataset.value = option.value;
-      item.textContent = option.label;
-      item.className = 'dropdown-item';  
-      item.style.padding = '8px';
-      item.style.cursor = 'pointer';
-
-      // When an option is clicked, update the dropdown's value and display
+      const item = document.createElement('bim-option');
+      item.value = option.value;  // Set the value attribute
+      item.textContent = option.label;  // Set the visible label
+  
+      // Event listener for selecting the item
       item.addEventListener('click', () => {
-        groupNameDropdown.value = [option.value];  
-        groupNameDropdown.label = option.label;  
-        console.log('Selected value:', option.value);
+        console.log('Item clicked:', option.value); // Log the click event
+  
+        // Set the dropdown's value to the selected option
+        groupNameDropdown.value = [option.value];
+        selectedDropdownValue = option.value; // Store the value in a separate variable
+        console.log('Dropdown value set to:', groupNameDropdown.value); // Log the value set
       });
-
+  
       groupNameDropdown.appendChild(item);
     });
-
-    highlighter.events.select.onClear.add(() => {
-      groupNameDropdown.value = [];
-      groupNameDropdown.label = "Select..."; // Reset the dropdown label
+  
+    // Listen for the dropdown's value change event
+    groupNameDropdown.addEventListener('change', () => {
+      console.log('Dropdown changed, current value:', groupNameDropdown.value); // Log on change
+  
+      if (groupNameDropdown.value.length === 0 && selectedDropdownValue) {
+        console.log("Preventing unexpected reset of the value");
+        groupNameDropdown.value = [selectedDropdownValue]; // Restore the value if it's unexpectedly cleared
+      }
     });
   };
+  
 
   const onSaveSelectionCreated = (e?: Element) => {
     if (!e) return;
@@ -71,13 +79,18 @@ export default (components: OBC.Components) => {
   };
 
   const onSaveGroupSelection = async () => {
-    if (!(groupNameDropdown && groupNameDropdown.value.length > 0)) return; 
-    const selectedValue = groupNameDropdown.value[0]; 
-    console.log(selectedValue);
-    
+    console.log("onSaveGroupSelection triggered");
+
+    if (!selectedDropdownValue) {
+      console.log("Dropdown has no value");
+      return;
+    }
+    const selectedValue = selectedDropdownValue;
+    console.log("Saving selection:", selectedValue); // Log selected value
+
     newSelectionForm.style.display = "none";
     saveSelectionBtn.style.display = "none";
-  
+
     const classifier = components.get(OBC.Classifier);
     if (!(selectedValue in classifier.list)) {
       classifier.list.CustomSelections[selectedValue] = {
@@ -86,12 +99,17 @@ export default (components: OBC.Components) => {
         name: selectedValue,
       };
     }
-  
+
+    console.log("Updated CustomSelections:", classifier.list.CustomSelections); // Log updated selections
+
     updateCustomSelections();
+    selectedDropdownValue = undefined; // Reset the temporary variable after saving
     groupNameDropdown.value = [];
+    groupNameDropdown.label = "Select...";  // Reset dropdown after saving
   };
   
   const onNewSelection = () => {
+    console.log("onNewSelection triggered");  // Diagnostic log
     const selectionLength = Object.keys(highlighter.selection.select).length;
     if (!(newSelectionForm && selectionLength !== 0)) return;
     newSelectionForm.style.display = "flex";
