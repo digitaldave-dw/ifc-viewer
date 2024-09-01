@@ -1,11 +1,15 @@
 {
-  "name": "bim-app",
+  "name": "bucc-app",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
+  },
+  "engines": {
+    "node": "20.11.0",
+    "npm": "10.7.0"
   },
   "devDependencies": {
     "@types/three": "0.160.0",
@@ -25,6 +29,7 @@
     "@thatopen/fragments": "~2.2.0",
     "@thatopen/ui": "~2.2.0",
     "@thatopen/ui-obc": "~2.2.0",
+    "express": "^4.19.2",
     "jszip": "3.10.1",
     "three": "0.160.1",
     "web-ifc": "0.0.57"
