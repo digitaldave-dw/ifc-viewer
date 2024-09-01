@@ -6,7 +6,6 @@ import projectInformation from "./components/Panels/ProjectInformation";
 import elementData from "./components/Panels/Selection";
 import settings from "./components/Panels/Settings";
 import load from "./components/Toolbars/Sections/Import";
-import help from "./components/Panels/Help";
 import camera from "./components/Toolbars/Sections/Camera";
 import selection from "./components/Toolbars/Sections/Selection";
 import { AppManager } from "./bim-components";
@@ -136,9 +135,6 @@ const leftPanel = BUI.Component.create(() => {
       </bim-tab>
       <bim-tab name="settings" label="Settings" icon="solar:settings-bold">
         ${settings(components)}
-      </bim-tab>
-      <bim-tab name="help" label="Help" icon="material-symbols:help">
-        ${help}
       </bim-tab>
     </bim-tabs> 
   `;

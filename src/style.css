@@ -10,8 +10,8 @@
   --bim-ui_gray-10: hsl(210 10% 95%);
 
   /* Brand Colors */
-  --bim-ui_main-base: #6528d7;
-  --bim-ui_accent-base: #bcf124;
+  --bim-ui_main-base: #024d40;
+  --bim-ui_accent-base: #dfe592;
 
   /* Brand Colors Contrasts */
   --bim-ui_main-contrast: var(--bim-ui_gray-10);
@@ -40,7 +40,7 @@
     --bim-ui_bg-contrast-60: var(--bim-ui_gray-4);
     --bim-ui_bg-contrast-80: var(--bim-ui_gray-2);
     --bim-ui_bg-contrast-100: var(--bim-ui_gray-0);
-    --bim-ui_accent-base: #6528d7;
+    --bim-ui_accent-base: #024d40;
   }
 }
 
