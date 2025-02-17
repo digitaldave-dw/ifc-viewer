@@ -1,8 +1,19 @@
-const express = require('express');
-const path = require('path');
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
 const app = express();
-app.use(express.static(__dirname + '/dist'));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+app.use(express.static(path.join(__dirname, 'dist')));
+
 app.get('/*', function (req, res) {
-    res.sendFile(path.join(__dirname + '/dist/index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-app.listen(process.env.PORT || 8080);
+
+app.listen(process.env.PORT || 8080, () => {
+    console.log('Server is running on port ' + (process.env.PORT || 8080));
+});
