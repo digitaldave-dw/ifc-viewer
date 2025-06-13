@@ -46,6 +46,20 @@ module.exports = {
     ],
     "import/prefer-default-export": "off",
     "no-plusplus": "off",
+    // Add this rule to allow devDependencies in config files
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        devDependencies: [
+          "**/*.config.{js,ts}",
+          "**/*.config.*.{js,ts}",
+          "vite.config.ts",
+          "copy-wasm.js",
+          "**/*.test.{js,ts}",
+          "**/*.spec.{js,ts}",
+        ],
+      },
+    ],
   },
   settings: {
     "import/resolver": {
